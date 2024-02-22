@@ -137,10 +137,5 @@ TW_SKIP_COMPATIBILITY_CHECK := true
 # System as root
 BOARD_SUPPRESS_SECURE_ERASE := true
 
-# Selinux
-BOARD_SEPOLICY_VERS := 29.0.3
-SEPOLICY_IGNORE_NEVERALLOWS := true
-SELINUX_IGNORE_NEVERALLOWS := true
-
 # Recovery
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
