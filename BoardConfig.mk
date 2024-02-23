@@ -18,6 +18,9 @@
 
 DEVICE_PATH := device/xiaomi/lancelot
 
+# APEX
+DEXPREOPT_GENERATE_APEX_IMAGE := true
+
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
 
@@ -40,8 +43,11 @@ TARGET_BOARD_SUFFIX := _64
 TARGET_USES_64_BIT_BINDER := true
 
 # Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := mt6768
 TARGET_NO_BOOTLOADER := true
-TARGET_USES_UEFI := true
+
+# Platform
+TARGET_BOARD_PLATFORM := mt6768
 
 # Assert
 TARGET_OTA_ASSERT_DEVICE := lancelot,galahad
@@ -56,11 +62,7 @@ BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
 # File systems
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
 TARGET_COPY_OUT_VENDOR := vendor
-RECOVERY_SDCARD_ON_DATA := true
-
 
 # Dynamic Partitions
 BOARD_SUPER_PARTITION_SIZE := 7327449088
@@ -103,14 +105,23 @@ BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
 BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 BOARD_FLASH_BLOCK_SIZE := 131072
 
-# Platform
-TARGET_BOARD_PLATFORM := mt6768
-TARGET_BOOTLOADER_BOARD_NAME := mt6768
+# Userdata Propertirs
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
+TARGET_USES_MKE2FS := true
 
-#MIUI 12.xx A11 DECRYPTION
-BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
-    --prop com.android.build.boot.os_version:$(PLATFORM_VERSION) \
-    --prop com.android.build.boot.security_patch:$(PLATFORM_SECURITY_PATCH)
+# UEFI
+TARGET_USES_UEFI := true
+
+# Metadata
+BOARD_USES_METADATA_PARTITION := true
+BOARD_ROOT_EXTRA_FOLDERS += metadata
+
+# System as Root
+BOARD_SUPPRESS_SECURE_ERASE := true
+
+# Use LZ4 Ramdisk compression instead of GZIP
+BOARD_RAMDISK_USE_LZ4 := true
 
 # Hack: prevent anti rollback
 TW_USE_FSCRYPT_POLICY := 1
@@ -126,25 +137,33 @@ VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
 BOARD_USES_METADATA_PARTITION := true
 
+# Tool
+TW_INCLUDE_REPACKTOOLS := true
+TW_INCLUDE_RESETPROP := true
+TW_INCLUDE_LIBRESETPROP := true
+
 # TWRP Configuration
-TW_BRIGHTNESS_PATH := "/sys/devices/platform/leds-mt65xx/leds/lcd-backlight/brightness"
 TW_THEME := portrait_hdpi
-TW_EXTRA_LANGUAGES := true
-TW_INCLUDE_NTFS_3G := true
-TW_SCREEN_BLANK_ON_BOOT := true
+TW_INCLUDE_NTFS_3G    := true
+TW_INCLUDE_FUSE_EXFAT := true
+TW_INCLUDE_FUSE_NTFS  := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
-TW_USE_TOOLBOX := true
+TW_SCREEN_BLANK_ON_BOOT := true
+TW_EXCLUDE_APEX := true
+TW_HAS_MTP := true
+RECOVERY_SDCARD_ON_DATA := true
+
+# Removes the loop block errors after flashing ZIPs (Workaround) 
+TW_IGNORE_LOGICAL_MOUNT_ERRORS := true
+TW_LOOP_DEVICE_ERRORS_TO_LOG := true
+
+# TW Screenshot
+TW_INCLUDE_FB2PNG := true
+
+# USB Configuration
 TW_EXCLUDE_DEFAULT_USB_INIT := true
-#TW_Y_OFFSET := 80
-#TW_H_OFFSET := -80
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.usb0/lun.%d/file
+
+# Log
 TWRP_INCLUDE_LOGCAT := true
-TARGET_USES_LOGD := true 
-TARGET_USES_MKE2FS := true
-TW_EXCLUDE_TWRPAPP := true
-TW_SKIP_COMPATIBILITY_CHECK := true
-
-# System as root
-BOARD_SUPPRESS_SECURE_ERASE := true
-
-# Recovery
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+TARGET_USES_LOGD := true
