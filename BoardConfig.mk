@@ -107,6 +107,11 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_BOARD_PLATFORM := mt6768
 TARGET_BOOTLOADER_BOARD_NAME := mt6768
 
+#MIUI 12.xx A11 DECRYPTION
+BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
+    --prop com.android.build.boot.os_version:$(PLATFORM_VERSION) \
+    --prop com.android.build.boot.security_patch:$(PLATFORM_SECURITY_PATCH)
+
 # Hack: prevent anti rollback
 TW_USE_FSCRYPT_POLICY := 1
 TW_INCLUDE_CRYPTO := true
