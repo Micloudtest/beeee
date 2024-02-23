@@ -28,8 +28,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 $(call inherit-product, device/xiaomi/lancelot/device.mk)
 
 # Inherit some common Omni stuff.
-$(call inherit-product, vendor/omni/config/common.mk)
-$(call inherit-product, vendor/omni/config/gsm.mk)
+$(call inherit-product, vendor/twrp/config/common.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_DEVICE := lancelot
@@ -38,8 +37,3 @@ PRODUCT_BRAND := xiaomi
 PRODUCT_MODEL := Redmi 9
 PRODUCT_MANUFACTURER := xiaomi
 PRODUCT_RELEASE_NAME := Redmi 9
-
-# Fastbootd
-PRODUCT_PACKAGES += \
-    android.hardware.fastboot@1.0-impl-mock \
-    android.hardware.fastboot@1.0-impl-mock.recovery
