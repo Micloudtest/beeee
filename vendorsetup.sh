@@ -79,7 +79,8 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_USE_SED_BINARY=1
 	export FOX_USE_XZ_UTILS=1
 	export OF_SKIP_MULTIUSER_FOLDERS_BACKUP=1
-	export OF_FLASHLIGHT_ENABLE=0
+	export OF_FLASHLIGHT_ENABLE=1
+	export OF_FL_PATH1="/tmp/flashlight" # See /init.recovery.mt6768.rc for more information
 	export FOX_DELETE_AROMAFM=1
 	export OF_PATCH_AVB20=1
 	export OF_FBE_METADATA_MOUNT_IGNORE="1"
@@ -87,6 +88,10 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 
 	# Run a Process After Formatting Data to Work-Around MTP Issues
 	export OF_RUN_POST_FORMAT_PROCESS=1
+
+        # Removes the loop block errors after flashing ZIPs (Workaround) 
+        export OF_IGNORE_LOGICAL_MOUNT_ERRORS=1
+        export OF_LOOP_DEVICE_ERRORS_TO_LOG=1
 
 	# let's see what are our build VARs
 	if [ -n "$FOX_BUILD_LOG_FILE" -a -f "$FOX_BUILD_LOG_FILE" ]; then
