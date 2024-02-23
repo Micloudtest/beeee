@@ -3,18 +3,6 @@
 # Copyright (C) 2020 The TWRP Open Source Project
 # Copyright (C) 2020 SebaUbuntu's TWRP device tree generator
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 DEVICE_PATH := device/xiaomi/lancelot
 
@@ -24,21 +12,22 @@ DEXPREOPT_GENERATE_APEX_IMAGE := true
 # For building with minimal manifest
 ALLOW_MISSING_DEPENDENCIES := true
 
+# Build Hack
+BUILD_BROKEN_DUP_RULES := true
+BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
+
 # Architecture
 TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-2a
+TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_ABI2 :=
 TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := cortex-a75
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-2a
+TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
-
 TARGET_BOARD_SUFFIX := _64
 TARGET_USES_64_BIT_BINDER := true
 
@@ -49,8 +38,32 @@ TARGET_NO_BOOTLOADER := true
 # Platform
 TARGET_BOARD_PLATFORM := mt6768
 
-# Assert
-TARGET_OTA_ASSERT_DEVICE := lancelot,galahad
+# Kernel
+BOARD_BOOTIMG_HEADER_VERSION := 2
+BOARD_KERNEL_BASE := 0x40078000
+BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
+BOARD_KERNEL_PAGESIZE := 2048
+BOARD_DTB_OFFSET := 0x0bc08000
+BOARD_RAMDISK_OFFSET := 0x07c08000
+BOARD_KERNEL_TAGS_OFFSET := 0x0bc08000
+
+# Image
+TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/kernel
+BOARD_PREBUILT_DTBIMAGE_DIR := $(DEVICE_PATH)/prebuilt/dtb
+BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
+BOARD_INCLUDE_RECOVERY_DTBO := true
+BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
+BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
+BOARD_KERNEL_IMAGE_NAME := Image.gz
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+
+# Dynamic Partitions
+BOARD_SUPER_PARTITION_SIZE := 7327449088
+BOARD_SUPER_PARTITION_GROUPS := main
+BOARD_MAIN_SIZE  := 7327449088
+BOARD_MAIN_PARTITION_LIST  := system system_ext vendor product 
 
 # AVB
 BOARD_AVB_ENABLE := true
@@ -58,17 +71,6 @@ BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
 BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
 BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
-
-# File systems
-BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-TARGET_COPY_OUT_VENDOR := vendor
-
-# Dynamic Partitions
-BOARD_SUPER_PARTITION_SIZE := 7327449088
-BOARD_SUPER_PARTITION_GROUPS := main
-BOARD_MAIN_SIZE  := 7327449088
-BOARD_MAIN_PARTITION_LIST  := product system vendor
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
@@ -82,28 +84,7 @@ BOARD_SYSTEMIMAGE_PARTITION_RESERVED_SIZE := 220270592
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_PARTITION_RESERVED_SIZE := 220270592
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-
-# Kernel
-TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz
-BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
-BOARD_KERNEL_IMAGE_NAME := Image.gz
-BOARD_KERNEL_BASE := 0x40078000
-BOARD_KERNEL_PAGESIZE := 2048
-BOARD_DTB_OFFSET := 0x0bc08000
-BOARD_RAMDISK_OFFSET := 0x07c08000
-BOARD_KERNEL_TAGS_OFFSET := 0x0bc08000
-
-# Image
-BOARD_PREBUILT_DTBIMAGE_DIR := $(DEVICE_PATH)/prebuilt/dtb
-BOARD_BOOTIMG_HEADER_VERSION := 2
-BOARD_PREBUILT_DTBOIMAGE := $(DEVICE_PATH)/prebuilt/dtbo.img
-BOARD_INCLUDE_RECOVERY_DTBO := true
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_KERNEL_TAGS_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOTIMG_HEADER_VERSION)
-BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
-BOARD_FLASH_BLOCK_SIZE := 131072
+TARGET_COPY_OUT_VENDOR := vendor
 
 # Userdata Propertirs
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -115,6 +96,7 @@ TARGET_USES_UEFI := true
 
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
+BOARD_ROOT_EXTRA_FOLDERS += metadata
 
 # System as Root
 BOARD_SUPPRESS_SECURE_ERASE := true
@@ -122,7 +104,18 @@ BOARD_SUPPRESS_SECURE_ERASE := true
 # Use LZ4 Ramdisk compression instead of GZIP
 BOARD_RAMDISK_USE_LZ4 := true
 
-# Hack: prevent anti rollback
+# Display
+TARGET_SCREEN_DENSITY := 440
+TW_BRIGHTNESS_PATH := "/sys/devices/platform/leds-mt65xx/leds/lcd-backlight/brightness"
+TW_MAX_BRIGHTNESS := 2047
+TW_DEFAULT_BRIGHTNESS := 500
+
+#MIUI 12.xx A11 DECRYPTION
+BOARD_AVB_RECOVERY_ADD_HASH_FOOTER_ARGS += \
+    --prop com.android.build.boot.os_version:$(PLATFORM_VERSION) \
+    --prop com.android.build.boot.security_patch:$(PLATFORM_SECURITY_PATCH)
+
+# Crypto
 TW_USE_FSCRYPT_POLICY := 1
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
@@ -131,9 +124,22 @@ TW_FIX_DECRYPTION_ON_DATA_MEDIA := true
 
 # Security patch level
 PLATFORM_VERSION :=  99.87.36
+PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
 PLATFORM_SECURITY_PATCH := 2099-12-31
 VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
-PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
+BOOT_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
+
+# Recovery
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_DEVICE_DIRS += $(DEVICE_PATH)
+
+ifneq ($(OF_HIDE_NOTCH),1)
+  # Configure Status bar icons for regular TWRP builds only
+    TW_DEVICE_VERSION := Lancelot-Tapin™
+    TW_STATUS_ICONS_ALIGN := center
+    TW_CUSTOM_CPU_POS := "790"
+    TW_CUSTOM_CLOCK_POS := "60"
+endif
 
 # Tool
 TW_INCLUDE_REPACKTOOLS := true
