@@ -38,8 +38,6 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export LC_ALL="C"
  	export ALLOW_MISSING_DEPENDENCIES=true
 	export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
-	export TARGET_DEVICE_ALT="shiva"
-	export OF_TARGET_DEVICES="lancelot,shiva"
 	export FOX_RECOVERY_SYSTEM_PARTITION="/dev/block/mapper/system"
 	export FOX_RECOVERY_VENDOR_PARTITION="/dev/block/mapper/vendor"
 	export OF_QUICK_BACKUP_LIST="/boot;/data;"
@@ -64,10 +62,14 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export OF_FIX_OTA_UPDATE_MANUAL_FLASH_ERROR=1
 	export OF_OTA_BACKUP_STOCK_BOOT_IMAGE=1
 
-	# R11.1 Setings
-	export FOX_BUILD_TYPE="Unofficial"
-	export OF_MAINTAINER="rama982"
-	export FOX_VERSION="R11.1_2-rama982"
+	# R12.1 Setings
+	export OF_MAINTAINER="Tapin Recovery Instraller"
+        export FOX_VERSION=R12.1_0
+        export FOX_BUILD_TYPE="Unofficial"
+        export TARGET_DEVICE_ALT="lancelot"
+        export FOX_TARGET_DEVICES="lancelot,shiva"
+        export OF_DEFAULT_TIMEZONE="WIB-7"
+        export LC_ALL="C"
 
 	export FOX_ENABLE_APP_MANAGER=1
 	export FOX_USE_BASH_SHELL=1
@@ -77,7 +79,7 @@ if [ "$1" = "$FDEVICE" -o "$FOX_BUILD_DEVICE" = "$FDEVICE" ]; then
 	export FOX_USE_SED_BINARY=1
 	export FOX_USE_XZ_UTILS=1
 	export OF_SKIP_MULTIUSER_FOLDERS_BACKUP=1
-	export FOX_R11=1
+	export FOX_R12_1=1
 	export OF_FLASHLIGHT_ENABLE=0
 	export FOX_DELETE_AROMAFM=1
 	export OF_PATCH_AVB20=1
